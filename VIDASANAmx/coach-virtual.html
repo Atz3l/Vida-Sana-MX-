@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Virtual - Vida Sana MX</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2ecc71;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #2c3e50;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-menu a:hover {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .main-content {
+            max-width: 900px;
+            margin: 100px auto 2rem;
+            padding: 0 2rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            border-left: 4px solid #f1c40f;
+            padding-left: 1rem;
+        }
+
+        .chat-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            display: flex;
+            gap: 10px;
+            max-width: 80%;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            background: #2ecc71;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .message.user .message-avatar {
+            background: #f1c40f;
+        }
+
+        .message-content {
+            background: white;
+            padding: 0.75rem 1rem;
+            border-radius: 15px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            max-width: 100%;
+        }
+
+        .message-content p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .message-content small {
+            font-size: 0.7em;
+            color: #7f8c8d;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+            padding: 1rem;
+            background: white;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #ecf0f1;
+            border-radius: 25px;
+            font-size: 1em;
+        }
+
+        .chat-input-area input:focus {
+            outline: none;
+            border-color: #2ecc71;
+        }
+
+        .chat-input-area button {
+            padding: 0.75rem 1.5rem;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .chat-input-area button:hover {
+            background: #27ae60;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 0.5rem 1rem;
+            background: #f0f0f0;
+            border-radius: 20px;
+            width: fit-content;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #7f8c8d;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        .quick-questions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        .quick-question {
+            background: #f0fdf4;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .quick-question:hover {
+            background: #2ecc71;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">💚 Vida Sana MX</div>
+            <div class="nav-menu">
+                <a onclick="irA('dashboard.html')">Inicio</a>
+                <a onclick="irA('perfil.html')">Mi Perfil</a>
+                <a onclick="irA('peso.html')">Mi Peso</a>
+                <a onclick="irA('alimentos.html')">Alimentos</a>
+                <a onclick="irA('ejercicios.html')">Ejercicios</a>
+                <a onclick="irA('historial.html')">Historial</a>
+                <a onclick="irA('logros.html')">Logros</a>
+                <a onclick="irA('coach-virtual.html')" style="background: #2ecc71; color: white;">Coach AI</a>
+                <a onclick="cerrarSesion()">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="main-content">
+        <div class="section">
+            <h2>🤖 Coach Virtual - Tu asistente de salud con IA</h2>
+            <p style="margin-bottom: 1rem; color: #7f8c8d;">Pregúntame sobre nutrición, ejercicios, motivación o consejos de salud. ¡Estoy aquí para ayudarte!</p>
+            
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot">
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-content">
+                            <p>👋 ¡Hola! Soy tu Coach Virtual de Vida Sana MX.</p>
+                            <p>Puedo ayudarte con consejos de nutrición, rutinas de ejercicio, motivación y responder tus dudas sobre salud.</p>
+                            <small>💡 ¿Qué te gustaría saber hoy?</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="userInput" placeholder="Escribe tu mensaje aquí..." onkeypress="if(event.key==='Enter') enviarMensaje()">
+                    <button onclick="enviarMensaje()">Enviar 📤</button>
+                </div>
+                <div class="quick-questions">
+                    <span class="quick-question" onclick="preguntaRapida('¿Qué alimentos me ayudan a bajar de peso?')">🥗 ¿Qué alimentos me ayudan a bajar de peso?</span>
+                    <span class="quick-question" onclick="preguntaRapida('Dame una rutina de ejercicio para principiantes')">🏃 Rutina para principiantes</span>
+                    <span class="quick-question" onclick="preguntaRapida('¿Cómo puedo mantenerme motivado?')">💪 Consejos de motivación</span>
+                    <span class="quick-question" onclick="preguntaRapida('¿Cuánta agua debo tomar al día?')">💧 Hidratación</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        
+        // 🔥 REEMPLAZA CON TU CONFIGURACIÓN DE FIREBASE
+        const firebaseConfig = {
+        apiKey: "AIzaSyAj491vMui-Ey6jVnIstBf_n0OiSfhplAg",
+        authDomain: "vida-sana-mx.firebaseapp.com",
+        databaseURL: "https://vida-sana-mx-default-rtdb.firebaseio.com",
+        projectId: "vida-sana-mx",
+        storageBucket: "vida-sana-mx.firebasestorage.app",
+        messagingSenderId: "525615173137",
+        appId: "1:525615173137:web:908556c4945e8ccbc6ebb0"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let currentUser = null;
+        let userData = {};
+        
+        function irA(pagina) {
+            window.location.href = pagina;
+        }
+        
+        window.irA = irA;
+        
+        window.cerrarSesion = async () => {
+            await signOut(auth);
+            window.location.href = 'index.html';
+        };
+        
+        // Cargar datos del usuario para contexto personalizado
+        async function cargarDatosUsuario(userId) {
+            try {
+                const userDoc = await getDoc(doc(db, "usuarios", userId));
+                if (userDoc.exists()) {
+                    userData = userDoc.data();
+                }
+            } catch (error) {
+                console.error("Error cargando datos:", error);
+            }
+        }
+        
+        // Agregar mensaje al chat
+        function agregarMensaje(texto, tipo) {
+            const container = document.getElementById('chatMessages');
+            const fecha = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            const mensajeDiv = document.createElement('div');
+            mensajeDiv.className = `message ${tipo}`;
+            mensajeDiv.innerHTML = `
+                <div class="message-avatar">${tipo === 'user' ? '👤' : '🤖'}</div>
+                <div class="message-content">
+                    <p>${texto}</p>
+                    <small>${fecha}</small>
+                </div>
+            `;
+            container.appendChild(mensajeDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        // Mostrar indicador de escritura
+        function mostrarTyping() {
+            const container = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <div class="message-avatar">🤖</div>
+                <div class="typing-indicator">
+                    <span></span><span></span><span></span>
+                </div>
+            `;
+            container.appendChild(typingDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function ocultarTyping() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) indicator.remove();
+        }
+        
+        // Simular respuesta del coach (sin API real para demo)
+        // En producción, aquí se conectaría con Gemini API
+        function obtenerRespuestaCoach(pregunta) {
+            const preguntaLower = pregunta.toLowerCase();
+            
+            // Respuestas inteligentes simuladas
+            if (preguntaLower.includes('peso') || preguntaLower.includes('bajar')) {
+                return "🥗 Para bajar de peso de forma saludable, te recomiendo:\n\n• Aumentar tu consumo de vegetales y fibra\n• Tomar al menos 2L de agua al día\n• Hacer ejercicio 30 minutos diarios\n• Reducir azúcares y procesados\n\n¿Quieres un plan más detallado?";
+            }
+            else if (preguntaLower.includes('ejercicio') || preguntaLower.includes('rutina')) {
+                return "💪 ¡Excelente! Para empezar te sugiero:\n\n🚶 Lunes/Miércoles/Viernes: 30 min de caminata rápida\n🏋️ Martes/Jueves: Sentadillas (3x15) + Lagartijas (3x10)\n🧘 Fines de semana: Estiramientos o yoga\n\n¿Te gustaría una rutina más específica según tu nivel?";
+            }
+            else if (preguntaLower.includes('motiv') || preguntaLower.includes('ánimo')) {
+                return "🌟 La motivación es clave. Aquí van algunos tips:\n\n✓ Celebra tus pequeños logros cada semana\n✓ Encuentra un compañero de ejercicio\n✓ Recuerda tu 'por qué' (salud, energía, autoestima)\n✓ No te castigues por recaídas, son parte del proceso\n\n¿Qué te motiva a ti a mejorar tu salud?";
+            }
+            else if (preguntaLower.includes('agua') || preguntaLower.includes('hidrat')) {
+                return "💧 La hidratación es fundamental. Lo recomendado es:\n\n• Entre 2 y 3 litros de agua al día\n• Más si haces ejercicio o hace calor\n• Puedes incluir infusiones o agua con frutas\n• Evita refrescos y jugos azucarados\n\n¿Te cuesta tomar suficiente agua?";
+            }
+            else if (preguntaLower.includes('gracias')) {
+                return "😊 ¡De nada! Estoy aquí para ayudarte en tu camino hacia una vida más saludable. ¿Necesitas algo más?";
+            }
+            else {
+                return `Gracias por tu pregunta. Como tu Coach Virtual, te recomiendo:\n\n• Mantener una alimentación balanceada\n• Hacer ejercicio regularmente\n• Dormir 7-8 horas diarias\n• Registrar tu progreso en la app\n\n¿Hay algo específico sobre ${pregunta.substring(0, 50)}... que quieras saber?`;
+            }
+        }
+        
+        // Función principal para enviar mensaje
+        window.enviarMensaje = async () => {
+            const input = document.getElementById('userInput');
+            const mensaje = input.value.trim();
+            
+            if (!mensaje) return;
+            
+            // Mostrar mensaje del usuario
+            agregarMensaje(mensaje, 'user');
+            input.value = '';
+            
+            // Mostrar indicador de escritura
+            mostrarTyping();
+            
+            // Simular tiempo de respuesta (para dar sensación de IA)
+            setTimeout(() => {
+                ocultarTyping();
+                const respuesta = obtenerRespuestaCoach(mensaje);
+                agregarMensaje(respuesta, 'bot');
+            }, 1000);
+        };
+        
+        window.preguntaRapida = (pregunta) => {
+            document.getElementById('userInput').value = pregunta;
+            enviarMensaje();
+        };
+        
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            currentUser = user;
+            await cargarDatosUsuario(user.uid);
+            
+            // Mensaje de bienvenida personalizado
+            setTimeout(() => {
+                if (userData.nombre) {
+                    agregarMensaje(`¡Hola ${userData.nombre}! 👋 ¿En qué puedo ayudarte con tu salud hoy?`, 'bot');
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>

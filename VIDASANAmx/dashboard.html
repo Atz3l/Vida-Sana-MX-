@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Vida Sana MX</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2ecc71;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #2c3e50;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-menu a:hover {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 80px auto 2rem;
+            padding: 0 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2ecc71;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            border-left: 4px solid #f1c40f;
+            padding-left: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: 0.3s;
+        }
+
+        .btn-primary {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #27ae60;
+        }
+
+        .btn-warning {
+            background: #f1c40f;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            font-size: 1em;
+        }
+
+        .food-list, .exercise-list {
+            display: grid;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .food-item, .exercise-item {
+            background: #f8f9fa;
+            padding: 0.75rem;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .food-item span:first-child, .exercise-item span:first-child {
+            font-weight: 500;
+        }
+
+        .ver-mas {
+            display: inline-block;
+            margin-top: 0.5rem;
+            font-size: 0.9em;
+            color: #2ecc71;
+            text-decoration: none;
+        }
+
+        .message {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .message.error {
+            background: #fee;
+            color: #e74c3c;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .main-content {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">💚 Vida Sana MX</div>
+            <div class="nav-menu">
+                <a onclick="irA('dashboard.html')" style="background: #2ecc71; color: white;">Inicio</a>
+                <a onclick="irA('perfil.html')">Mi Perfil</a>
+                <a onclick="irA('peso.html')">Mi Peso</a>
+                <a onclick="irA('alimentos.html')">Alimentos</a>
+                <a onclick="irA('ejercicios.html')">Ejercicios</a>
+                <a onclick="irA('historial.html')">Historial</a>
+                <a onclick="irA('logros.html')">Logros</a>
+                <a onclick="irA('coach-virtual.html')">🤖 Coach AI</a>
+                <a onclick="cerrarSesion()">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="main-content">
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <h3>Peso Actual</h3>
+                <div class="value" id="currentWeight">-- kg</div>
+            </div>
+            <div class="stat-card">
+                <h3>Meta de Peso</h3>
+                <div class="value" id="goalWeight">-- kg</div>
+            </div>
+            <div class="stat-card">
+                <h3>Progreso</h3>
+                <div class="value" id="progress">--%</div>
+            </div>
+            <div class="stat-card">
+                <h3>Calorías Hoy</h3>
+                <div class="value" id="todayCalories">0 kcal</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>🎯 Recomendación del Coach Virtual</h2>
+            <p id="coachMessage">¡Registra tus comidas y ejercicios para recibir recomendaciones personalizadas!</p>
+        </div>
+        
+        <div class="section">
+            <h2>📝 Registro Rápido de Peso</h2>
+            <div class="form-group">
+                <label>Peso (kg)</label>
+                <input type="number" step="0.1" id="quickWeight" placeholder="Ej: 70.5">
+            </div>
+            <button class="btn btn-primary" onclick="registroPesoRapido()">Registrar Peso</button>
+            <div id="quickMessage"></div>
+        </div>
+        
+        <div class="section">
+            <h2>🍎 Últimos Alimentos Registrados</h2>
+            <div id="recentFoods" class="food-list">
+                <p style="color: #7f8c8d;">Cargando alimentos...</p>
+            </div>
+            <a class="ver-mas" onclick="irA('alimentos.html')">+ Ver todos los alimentos</a>
+        </div>
+        
+        <div class="section">
+            <h2>💪 Ejercicios Recientes</h2>
+            <div id="recentExercises" class="exercise-list">
+                <p style="color: #7f8c8d;">Cargando ejercicios...</p>
+            </div>
+            <a class="ver-mas" onclick="irA('ejercicios.html')">+ Ver todos los ejercicios</a>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs, orderBy, limit, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        
+        // 🔥 REEMPLAZA CON TU CONFIGURACIÓN DE FIREBASE
+        const firebaseConfig = {
+        apiKey: "AIzaSyAj491vMui-Ey6jVnIstBf_n0OiSfhplAg",
+        authDomain: "vida-sana-mx.firebaseapp.com",
+        databaseURL: "https://vida-sana-mx-default-rtdb.firebaseio.com",
+        projectId: "vida-sana-mx",
+        storageBucket: "vida-sana-mx.firebasestorage.app",
+        messagingSenderId: "525615173137",
+        appId: "1:525615173137:web:908556c4945e8ccbc6ebb0"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let currentUser = null;
+        
+        function mostrarMensaje(elementId, texto, tipo) {
+            const div = document.getElementById(elementId);
+            div.innerHTML = `<div class="message ${tipo}">${texto}</div>`;
+            setTimeout(() => {
+                if (document.getElementById(elementId).innerHTML === `<div class="message ${tipo}">${texto}</div>`) {
+                    document.getElementById(elementId).innerHTML = '';
+                }
+            }, 3000);
+        }
+        
+        function irA(pagina) {
+            window.location.href = pagina;
+        }
+        
+        window.irA = irA;
+        
+        window.cerrarSesion = async () => {
+            await signOut(auth);
+            window.location.href = 'index.html';
+        };
+        
+        window.registroPesoRapido = async () => {
+            const peso = parseFloat(document.getElementById('quickWeight').value);
+            if (!peso || peso <= 0) {
+                mostrarMensaje('quickMessage', '❌ Ingresa un peso válido', 'error');
+                return;
+            }
+            
+            try {
+                await addDoc(collection(db, "pesos"), {
+                    userId: currentUser.uid,
+                    peso: peso,
+                    fecha: new Date().toISOString()
+                });
+                
+                await setDoc(doc(db, "usuarios", currentUser.uid), {
+                    peso_actual: peso
+                }, { merge: true });
+                
+                mostrarMensaje('quickMessage', '✅ Peso registrado exitosamente', 'success');
+                document.getElementById('quickWeight').value = '';
+                
+                setTimeout(() => location.reload(), 1500);
+            } catch (error) {
+                mostrarMensaje('quickMessage', '❌ Error: ' + error.message, 'error');
+            }
+        };
+        
+        async function cargarUltimosAlimentos(userId) {
+            try {
+                const q = query(
+                    collection(db, "alimentos"),
+                    where("userId", "==", userId),
+                    orderBy("fecha", "desc"),
+                    limit(5)
+                );
+                const snapshot = await getDocs(q);
+                const container = document.getElementById('recentFoods');
+                
+                if (snapshot.empty) {
+                    container.innerHTML = '<p style="color: #7f8c8d;">No hay alimentos registrados</p>';
+                } else {
+                    container.innerHTML = '';
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        const fecha = new Date(data.fecha).toLocaleDateString();
+                        container.innerHTML += `
+                            <div class="food-item">
+                                <span>${data.nombre}</span>
+                                <span>🔥 ${data.calorias} kcal - ${fecha}</span>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (error) {
+                console.error('Error cargando alimentos:', error);
+                document.getElementById('recentFoods').innerHTML = '<p style="color: #e74c3c;">Error cargando alimentos</p>';
+            }
+        }
+        
+        async function cargarEjerciciosRecientes(userId) {
+            try {
+                const q = query(
+                    collection(db, "ejercicios"),
+                    where("userId", "==", userId),
+                    orderBy("fecha", "desc"),
+                    limit(5)
+                );
+                const snapshot = await getDocs(q);
+                const container = document.getElementById('recentExercises');
+                
+                if (snapshot.empty) {
+                    container.innerHTML = '<p style="color: #7f8c8d;">No hay ejercicios registrados</p>';
+                } else {
+                    container.innerHTML = '';
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        const fecha = new Date(data.fecha).toLocaleDateString();
+                        container.innerHTML += `
+                            <div class="exercise-item">
+                                <span>${data.nombre}</span>
+                                <span>🔥 ${data.calorias} kcal - ${fecha}</span>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (error) {
+                console.error('Error cargando ejercicios:', error);
+                document.getElementById('recentExercises').innerHTML = '<p style="color: #e74c3c;">Error cargando ejercicios</p>';
+            }
+        }
+        
+        async function cargarCaloriasHoy(userId) {
+            try {
+                const hoyInicio = new Date();
+                hoyInicio.setHours(0,0,0,0);
+                const hoyFin = new Date();
+                hoyFin.setHours(23,59,59,999);
+                
+                const q = query(
+                    collection(db, "alimentos"),
+                    where("userId", "==", userId),
+                    where("fecha", ">=", hoyInicio.toISOString()),
+                    where("fecha", "<=", hoyFin.toISOString())
+                );
+                const snapshot = await getDocs(q);
+                let total = 0;
+                snapshot.forEach(doc => {
+                    total += doc.data().calorias;
+                });
+                document.getElementById('todayCalories').innerHTML = `${total} kcal`;
+            } catch (error) {
+                console.error('Error cargando calorías:', error);
+            }
+        }
+        
+        async function cargarDatosUsuario(userId) {
+            try {
+                const userDoc = await getDoc(doc(db, "usuarios", userId));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    const pesoActual = data.peso_actual || 70;
+                    const pesoMeta = data.peso_meta || 65;
+                    document.getElementById('currentWeight').innerHTML = `${pesoActual} kg`;
+                    document.getElementById('goalWeight').innerHTML = `${pesoMeta} kg`;
+                    
+                    const diferencia = pesoActual - pesoMeta;
+                    const progreso = diferencia > 0 ? ((diferencia / pesoActual) * 100).toFixed(1) : 0;
+                    document.getElementById('progress').innerHTML = `${progreso}%`;
+                    
+                    if (progreso > 0) {
+                        document.getElementById('coachMessage').innerHTML = `🎉 ¡Vas por buen camino! Llevas ${progreso}% de avance hacia tu meta. ¡Sigue así!`;
+                    } else if (progreso === 0) {
+                        document.getElementById('coachMessage').innerHTML = `🎯 ¡Ya alcanzaste tu meta! Ahora mantén tu peso en ${pesoMeta} kg.`;
+                    } else {
+                        document.getElementById('coachMessage').innerHTML = `💪 ¡Ánimo! Tu meta es llegar a ${pesoMeta} kg. ¡Tú puedes lograrlo!`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error cargando usuario:', error);
+            }
+        }
+        
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            currentUser = user;
+            
+            await cargarDatosUsuario(user.uid);
+            await cargarUltimosAlimentos(user.uid);
+            await cargarEjerciciosRecientes(user.uid);
+            await cargarCaloriasHoy(user.uid);
+        });
+    </script>
+</body>
+</html>

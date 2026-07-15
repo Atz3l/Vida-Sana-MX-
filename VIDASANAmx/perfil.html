@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Vida Sana MX</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/perfil.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== ESTILOS PARA FOTO DE PERFIL ===== */
+        .profile-avatar {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-avatar .avatar-placeholder {
+            font-size: 3.5rem;
+            color: white;
+        }
+
+        .edit-avatar-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: #f1c40f;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            color: #2c3e50;
+            z-index: 2;
+        }
+
+        .edit-avatar-btn:hover {
+            transform: scale(1.1);
+            background: #f39c12;
+        }
+
+        #passwordForm .form-group input {
+            display: block !important;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            font-size: 1em;
+            background: white;
+            font-family: inherit;
+            transition: 0.3s;
+        }
+
+        #passwordForm .form-group input:focus {
+            border-color: #2ecc71;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+        }
+
+        #passwordForm .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        #passwordForm .form-group label .required {
+            color: #e74c3c;
+            margin-left: 2px;
+        }
+
+        #passwordForm {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 1.5rem;
+        }
+
+        #passwordForm h3 {
+            margin-top: 0 !important;
+            border-top: none !important;
+            padding-top: 0 !important;
+        }
+
+        #passwordForm .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        #passwordForm .btn-password {
+            background: #e74c3c;
+            color: white;
+        }
+
+        #passwordForm .btn-password:hover {
+            background: #c0392b;
+        }
+
+        #passwordForm .btn-cancel {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        #passwordForm .btn-cancel:hover {
+            background: #bdc3c7;
+        }
+
+        #passwordForm .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .password-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            display: block;
+            border-left: 4px solid #17a2b8;
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== SIDEBAR ===== -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <h1>💚 Vida Sana</h1>
+            <span>SALUD & BIENESTAR</span>
+        </div>
+
+        <div class="sidebar-menu">
+            <div class="menu-label">PRINCIPAL</div>
+            <a onclick="irA('index.html')"><i class="fas fa-th-large"></i> Inicio </a>
+
+            <div class="menu-label" style="margin-top: 1.5rem;">MÓDULO PERFIL</div>
+            <a class="active" onclick="irA('perfil.html')"><i class="fas fa-user"></i> Perfil de usuario</a>
+
+            <div class="menu-label" style="margin-top: 1.5rem;">MÓDULO NUTRICIÓN</div>
+            <a onclick="irA('alimentos.html')"><i class="fas fa-utensils"></i> Registro de alimentos</a>
+
+            <div class="menu-label" style="margin-top: 1.5rem;">MÓDULO PESO</div>
+            <a onclick="irA('peso.html')"><i class="fas fa-weight-scale"></i> Registro de peso</a>
+
+            <div class="menu-label" style="margin-top: 1.5rem;">MÓDULO EJERCICIO</div>
+            <a onclick="irA('ejercicios.html')"><i class="fas fa-dumbbell"></i> Actividad física</a>
+
+            <div class="menu-label" style="margin-top: 1.5rem;">MÓDULO BIENESTAR</div>
+            <a onclick="irA('coach-virtual.html')"><i class="fas fa-robot"></i> Coach Virtual</a>
+            <a onclick="irA('logros.html')"><i class="fas fa-trophy"></i> Mis Logros</a>
+
+            <div class="menu-label" style="margin-top: 1.5rem;">ADMINISTRACIÓN</div>
+            <a onclick="irA('admin.html')"><i class="fas fa-shield-alt"></i> Panel Admin</a>
+
+            <div class="menu-label" style="margin-top: 1.5rem;">SALIR</div>
+            <a onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main-content">
+        <div class="profile-container">
+
+            <!-- Header -->
+            <div class="top-header">
+                <div>
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2>👤 Mi Perfil</h2>
+                    <div class="subtitle">Gestiona tu información personal y preferencias</div>
+                </div>
+            </div>
+
+            <!-- Profile Card -->
+            <div class="profile-card" id="profileCard">
+
+                <!-- MODO VISUALIZACIÓN -->
+                <div id="viewMode" class="view-mode">
+                    <!-- Profile Header -->
+                    <div class="profile-header">
+                        <div class="profile-avatar-wrapper">
+                            <div class="profile-avatar" id="avatarDisplay">
+                                <!-- La imagen se mostrará aquí usando JavaScript -->
+                            </div>
+                            <button class="edit-avatar-btn" onclick="document.getElementById('fileInput').click()" title="Subir foto de perfil">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                            <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="subirFotoPerfil(event)">
+                        </div>
+                        <div class="profile-header-info">
+                            <h2 id="displayName">Cargando...</h2>
+                            <div class="email" id="displayEmail">cargando@email.com</div>
+                        </div>
+                    </div>
+
+                    <!-- Estadísticas -->
+                    <div class="profile-stats" id="profileStats">
+                        <div class="profile-stat">
+                            <div class="stat-number" id="statWeight">--</div>
+                            <div class="stat-label">Peso Actual</div>
+                        </div>
+                        <div class="profile-stat">
+                            <div class="stat-number" id="statGoal">--</div>
+                            <div class="stat-label">Peso Meta</div>
+                        </div>
+                        <div class="profile-stat">
+                            <div class="stat-number" id="statHeight">--</div>
+                            <div class="stat-label">Altura</div>
+                        </div>
+                        <div class="profile-stat">
+                            <div class="stat-number" id="statProgress">--%</div>
+                            <div class="stat-label">Progreso</div>
+                        </div>
+                    </div>
+
+                    <!-- Información Personal -->
+                    <div class="profile-section">
+                        <h3>
+                            <span class="section-icon"><i class="fas fa-id-card"></i></span>
+                            Información Personal
+                        </h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Nombre completo</span>
+                                <span class="info-value" id="viewNombre">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Fecha de nacimiento</span>
+                                <span class="info-value" id="viewNacimiento">No especificada</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Género</span>
+                                <span class="info-value" id="viewGenero">No especificado</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Altura (cm)</span>
+                                <span class="info-value" id="viewAltura">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Nivel de actividad</span>
+                                <span class="info-value" id="viewActividad">No especificado</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Condiciones de salud</span>
+                                <span class="info-value" id="viewCondiciones">Ninguna</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metas -->
+                    <div class="profile-section">
+                        <h3>
+                            <span class="section-icon"><i class="fas fa-bullseye"></i></span>
+                            Metas Personales
+                        </h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Peso actual</span>
+                                <span class="info-value" id="viewPesoActual">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Peso meta</span>
+                                <span class="info-value" id="viewPesoMeta">--</span>
+                            </div>
+                            <div class="info-item" style="grid-column: span 2;">
+                                <span class="info-label">Progreso</span>
+                                <span class="info-value" style="width: 60%;">
+                                    <div class="meta-progress-wrapper" style="width: 100%;">
+                                        <div class="progress-track" style="flex: 1;">
+                                            <div class="progress-fill" id="metaProgressBar" style="width: 0%;"></div>
+                                        </div>
+                                        <span class="progress-text" id="viewProgressText" style="min-width: 45px;">0%</span>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Acciones -->
+                    <div class="view-actions" style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
+                        <button class="btn btn-edit" onclick="toggleEditMode()">
+                            <i class="fas fa-pencil-alt"></i> Editar Perfil
+                        </button>
+                        <button class="btn btn-password" onclick="togglePasswordForm()">
+                            <i class="fas fa-key"></i> Cambiar Contraseña
+                        </button>
+                    </div>
+
+                    <!-- Cambiar Contraseña -->
+                    <div id="passwordForm" style="display: none;">
+                        <h3><i class="fas fa-key" style="color: #e74c3c;"></i> Cambiar Contraseña</h3>
+                        <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 1.5rem;">
+                            Ingresa tu contraseña actual y luego la nueva contraseña.
+                        </p>
+
+                        <div class="form-group">
+                            <label>Contraseña actual <span class="required">*</span></label>
+                            <input type="password" id="currentPassword" placeholder="Ingresa tu contraseña actual" autocomplete="current-password">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nueva contraseña <span class="required">*</span></label>
+                            <input type="password" id="newPassword" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Confirmar nueva contraseña <span class="required">*</span></label>
+                            <input type="password" id="confirmPassword" placeholder="Repite la nueva contraseña" autocomplete="new-password">
+                        </div>
+
+                        <div class="password-actions">
+                            <button class="btn btn-password" id="changePasswordBtn" onclick="cambiarPassword()">
+                                <i class="fas fa-save"></i> Cambiar contraseña
+                            </button>
+                            <button class="btn btn-cancel" onclick="togglePasswordForm()">
+                                <i class="fas fa-times"></i> Cancelar
+                            </button>
+                        </div>
+                        <div id="passwordMessage"></div>
+                    </div>
+                </div>
+
+                <!-- MODO EDICIÓN -->
+                <div id="editMode" style="display: none;">
+                    <div class="profile-section">
+                        <h3><i class="fas fa-edit"></i> Editar Perfil</h3>
+                        <p style="color: #7f8c8d; margin-bottom: 1.5rem;">Modifica los campos que deseas actualizar.</p>
+
+                        <div class="form-group">
+                            <label>Nombre completo <span class="required">*</span></label>
+                            <input type="text" id="editNombreInput" placeholder="Tu nombre completo">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Fecha de nacimiento</label>
+                                <input type="date" id="editNacimientoInput">
+                            </div>
+                            <div class="form-group">
+                                <label>Género</label>
+                                <select id="editGeneroInput">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="Femenino">Femenino</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Otro">Otro</option>
+                                    <option value="Prefiero no decir">Prefiero no decir</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Altura (cm)</label>
+                                <input type="number" id="editAlturaInput" placeholder="Ej: 165" step="0.5">
+                            </div>
+                            <div class="form-group">
+                                <label>Nivel de actividad</label>
+                                <select id="editActividadInput">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="Sedentario">Sedentario</option>
+                                    <option value="Ligero">Ligero</option>
+                                    <option value="Moderado">Moderado</option>
+                                    <option value="Activo">Activo</option>
+                                    <option value="Muy activo">Muy activo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Condiciones de salud relevantes</label>
+                            <textarea id="editCondicionesInput" rows="2" placeholder="Ej. Diabetes, hipertensión... (Opcional)"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3><i class="fas fa-bullseye"></i> Metas</h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Peso actual (kg)</label>
+                                <input type="number" id="editPesoActualInput" placeholder="Ej: 70" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label>Peso meta (kg)</label>
+                                <input type="number" id="editPesoMetaInput" placeholder="Ej: 65" step="0.1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="edit-actions">
+                        <button class="btn btn-save" onclick="guardarPerfil()">
+                            <i class="fas fa-save"></i> Guardar Cambios
+                        </button>
+                        <button class="btn btn-cancel" onclick="toggleEditMode()">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                </div>
+
+                <div id="profileMessage"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script type="module">
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { auth } from './js/main.js';
+        import { cargarDatosUsuario, toggleEditMode, guardarPerfil } from './js/perfil.js';
+
+        const db = getFirestore();
+
+        // ============================================================
+        // FUNCIONES DE FOTO DE PERFIL - VERSIÓN CORREGIDA
+        // ============================================================
+
+        function actualizarFoto(imageData) {
+            console.log('📸 actualizarFoto llamado');
+            
+            const avatarContainer = document.getElementById('avatarDisplay');
+            
+            if (!avatarContainer) {
+                console.warn('⚠️ No se encontró avatarDisplay');
+                return;
+            }
+            
+            if (imageData && imageData !== '') {
+                // Crear o actualizar la imagen
+                let img = document.getElementById('profileImage');
+                if (!img) {
+                    img = document.createElement('img');
+                    img.id = 'profileImage';
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.borderRadius = '50%';
+                    img.style.objectFit = 'cover';
+                    img.style.display = 'block';
+                    avatarContainer.innerHTML = '';
+                    avatarContainer.appendChild(img);
+                }
+                img.src = imageData;
+                img.style.display = 'block';
+                avatarContainer.style.background = 'transparent';
+                console.log('✅ Foto actualizada');
+            } else {
+                // Mostrar texto por defecto
+                avatarContainer.innerHTML = '';
+                avatarContainer.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)';
+                avatarContainer.style.display = 'flex';
+                avatarContainer.style.alignItems = 'center';
+                avatarContainer.style.justifyContent = 'center';
+                avatarContainer.style.fontSize = '3.5rem';
+                avatarContainer.style.color = 'white';
+                avatarContainer.textContent = '👤';
+                console.log('✅ Avatar por defecto');
+            }
+        }
+
+        window.subirFotoPerfil = async (event) => {
+            const file = event.target.files[0];
+            if (!file) {
+                mostrarMensaje('profileMessage', '❌ No seleccionaste ninguna imagen', 'error');
+                return;
+            }
+
+            console.log('📁 Archivo:', file.name, file.type, file.size);
+
+            if (!file.type.startsWith('image/')) {
+                mostrarMensaje('profileMessage', '❌ El archivo debe ser una imagen', 'error');
+                return;
+            }
+
+            if (file.size > 2 * 1024 * 1024) {
+                mostrarMensaje('profileMessage', '❌ La imagen no debe pesar más de 2MB', 'error');
+                return;
+            }
+
+            mostrarMensaje('profileMessage', '⏳ Subiendo imagen...', 'info');
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const imageData = e.target.result;
+                    const user = auth.currentUser;
+                    
+                    if (!user) {
+                        mostrarMensaje('profileMessage', '❌ No hay usuario autenticado', 'error');
+                        return;
+                    }
+
+                    await setDoc(doc(db, "usuarios", user.uid), {
+                        foto_perfil: imageData,
+                        updated_at: new Date().toISOString()
+                    }, { merge: true });
+
+                    console.log('✅ Foto guardada en Firestore');
+                    
+                    // Actualizar vista
+                    actualizarFoto(imageData);
+                    mostrarMensaje('profileMessage', '✅ ¡Foto de perfil actualizada!', 'success');
+                    
+                    document.getElementById('fileInput').value = '';
+
+                } catch (error) {
+                    console.error('❌ Error:', error);
+                    mostrarMensaje('profileMessage', '❌ Error al guardar: ' + error.message, 'error');
+                }
+            };
+            
+            reader.readAsDataURL(file);
+        };
+
+
+        // ============================================================
+        // FUNCIONES DE CONTRASEÑA
+        // ============================================================
+
+        window.togglePasswordForm = () => {
+            const form = document.getElementById('passwordForm');
+            if (form) {
+                const isVisible = form.style.display === 'block';
+                form.style.display = isVisible ? 'none' : 'block';
+                document.getElementById('passwordMessage').innerHTML = '';
+                document.getElementById('currentPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+                const btn = document.getElementById('changePasswordBtn');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Cambiar contraseña';
+            }
+        };
+
+        window.cambiarPassword = async () => {
+            const user = auth.currentUser;
+            
+            if (!user) {
+                mostrarMensaje('passwordMessage', '❌ No hay usuario autenticado', 'error');
+                return;
+            }
+
+            const currentPass = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+
+            if (!currentPass) {
+                mostrarMensaje('passwordMessage', '❌ Ingresa tu contraseña actual', 'error');
+                return;
+            }
+
+            if (!newPass || newPass.length < 6) {
+                mostrarMensaje('passwordMessage', '❌ La nueva contraseña debe tener al menos 6 caracteres', 'error');
+                return;
+            }
+
+            if (newPass !== confirmPass) {
+                mostrarMensaje('passwordMessage', '❌ Las contraseñas no coinciden', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('changePasswordBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '⏳ Verificando...';
+            btn.disabled = true;
+
+            try {
+                const { EmailAuthProvider, reauthenticateWithCredential, updatePassword } = 
+                    await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+                
+                const credential = EmailAuthProvider.credential(user.email, currentPass);
+                await reauthenticateWithCredential(user, credential);
+                await updatePassword(user, newPass);
+
+                mostrarMensaje('passwordMessage', '✅ ¡Contraseña actualizada exitosamente!', 'success');
+                document.getElementById('currentPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+
+                setTimeout(() => {
+                    document.getElementById('passwordForm').style.display = 'none';
+                }, 3000);
+
+            } catch (error) {
+                console.error('Error cambiando contraseña:', error);
+                
+                switch (error.code) {
+                    case 'auth/wrong-password':
+                    case 'auth/invalid-credential':
+                        mostrarMensaje('passwordMessage', '❌ Contraseña actual incorrecta. Verifica e intenta de nuevo.', 'error');
+                        break;
+                    case 'auth/too-many-requests':
+                        mostrarMensaje('passwordMessage', '❌ Demasiados intentos. Espera unos minutos.', 'error');
+                        break;
+                    case 'auth/network-request-failed':
+                        mostrarMensaje('passwordMessage', '❌ Error de conexión. Verifica tu internet.', 'error');
+                        break;
+                    default:
+                        mostrarMensaje('passwordMessage', '❌ Error: ' + error.message, 'error');
+                }
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        };
+
+        // ============================================================
+        // FUNCIÓN PARA MOSTRAR MENSAJES (global)
+        // ============================================================
+
+        function mostrarMensaje(elementId, texto, tipo = 'success') {
+            const div = document.getElementById(elementId);
+            if (!div) return;
+            div.innerHTML = `<div class="message ${tipo}">${texto}</div>`;
+            setTimeout(() => {
+                if (document.getElementById(elementId)?.innerHTML === `<div class="message ${tipo}">${texto}</div>`) {
+                    document.getElementById(elementId).innerHTML = '';
+                }
+            }, 5000);
+        }
+
+        // ============================================================
+        // MODIFICAR mostrarDatos para incluir foto
+        // ============================================================
+
+        // Guardamos la función original de cargarDatosUsuario
+        const originalCargarDatos = cargarDatosUsuario;
+
+        // Sobrescribimos para incluir la foto
+        window.cargarDatosUsuarioConFoto = async (userId) => {
+            try {
+                const userDoc = await getDoc(doc(db, "usuarios", userId));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    // Llamar a la función original
+                    await originalCargarDatos(userId);
+                    // Actualizar foto
+                    if (data.foto_perfil) {
+                        actualizarFoto(data.foto_perfil);
+                    }
+                }
+            } catch (error) {
+                console.error('Error cargando foto:', error);
+            }
+        };
+
+        // Exponer funciones
+        window.toggleEditMode = toggleEditMode;
+        window.guardarPerfil = guardarPerfil;
+
+        // Inicializar
+        // En la inicialización, reemplaza la parte de la foto con esto:
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            await cargarDatosUsuario(user.uid);
+            
+            try {
+                const userDoc = await getDoc(doc(db, "usuarios", user.uid));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    if (data.foto_perfil) {
+                        actualizarFoto(data.foto_perfil);
+                        console.log('✅ Foto cargada');
+                    }
+                }
+            } catch (error) {
+                console.error('Error cargando foto:', error);
+            }
+        });
+
+    </script>
+</body>
+</html>

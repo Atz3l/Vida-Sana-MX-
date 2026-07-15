@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Vida Sana MX</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+        
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2ecc71;
+        }
+        
+        .main-content {
+            max-width: 1200px;
+            margin: 100px auto 2rem;
+            padding: 0 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .stat-card h3 {
+            color: #7f8c8d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2ecc71;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section h2 {
+            margin-bottom: 1rem;
+            border-left: 4px solid #f1c40f;
+            padding-left: 1rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .btn-danger {
+            padding: 0.25rem 0.75rem;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">💚 Vida Sana MX - Admin</div>
+            <div style="display: flex; gap: 1rem;">
+                <a href="dashboard.html" style="color:#2ecc71;">Volver al Dashboard</a>
+                <a href="#" onclick="logout()" style="color:#e74c3c;">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="main-content">
+        <div class="stats-grid" id="adminStats">
+            <div class="stat-card">
+                <h3>Total Usuarios</h3>
+                <div class="number" id="totalUsers">--</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Alimentos Registrados</h3>
+                <div class="number" id="totalFoods">--</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Ejercicios</h3>
+                <div class="number" id="totalExercises">--</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>👥 Gestión de Usuarios</h2>
+            <table id="usersTable">
+                <thead>
+                    <tr><th>Email</th><th>Nombre</th><th>Acciones</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        
+        const firebaseConfig = {
+        apiKey: "AIzaSyAj491vMui-Ey6jVnIstBf_n0OiSfhplAg",
+        authDomain: "vida-sana-mx.firebaseapp.com",
+        databaseURL: "https://vida-sana-mx-default-rtdb.firebaseio.com",
+        projectId: "vida-sana-mx",
+        storageBucket: "vida-sana-mx.firebasestorage.app",
+        messagingSenderId: "525615173137",
+        appId: "1:525615173137:web:908556c4945e8ccbc6ebb0"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            // Solo para demo, cualquiera puede ver admin
+            await loadAdminData();
+        });
+        
+        async function loadAdminData() {
+            // Cargar usuarios
+            const usersSnapshot = await getDocs(collection(db, "usuarios"));
+            const users = [];
+            usersSnapshot.forEach(doc => {
+                users.push({ id: doc.id, ...doc.data() });
+            });
+            document.getElementById('totalUsers').innerHTML = users.length;
+            
+            // Mostrar usuarios
+            const tbody = document.querySelector('#usersTable tbody');
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>${user.email}</td>
+                    <td>${user.nombre || 'Sin nombre'}</td>
+                    <td><button class="btn-danger" onclick="deleteUser('${user.id}')">Eliminar</button></td>
+                </tr>
+            `).join('');
+            
+            // Cargar estadísticas de alimentos y ejercicios
+            const foodsSnapshot = await getDocs(collection(db, "alimentos"));
+            document.getElementById('totalFoods').innerHTML = foodsSnapshot.size;
+            
+            const exercisesSnapshot = await getDocs(collection(db, "ejercicios"));
+            document.getElementById('totalExercises').innerHTML = exercisesSnapshot.size;
+        }
+        
+        window.deleteUser = async (userId) => {
+            if (confirm('¿Eliminar usuario? Se borrarán todos sus datos')) {
+                await deleteDoc(doc(db, "usuarios", userId));
+                alert('Usuario eliminado');
+                location.reload();
+            }
+        };
+        
+        window.logout = async () => {
+            await signOut(auth);
+            window.location.href = 'index.html';
+        };
+    </script>
+</body>
+</html>

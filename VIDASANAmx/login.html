@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vida Sana MX - Iniciar Sesión</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body class="login-body">
+
+    <div class="auth-wrapper">
+        <!-- ===== LADO IZQUIERDO - BRANDING ===== -->
+        <div class="auth-brand">
+            <div class="brand-icon">💚</div>
+            <h1>Vida <span>Sana</span> MX</h1>
+            <p>Bienestar y salud para todos</p>
+            <div class="brand-features">
+                <div class="feature">
+                    <i class="fas fa-check"></i> Control de peso inteligente
+                </div>
+                <div class="feature">
+                    <i class="fas fa-check"></i> Seguimiento de hábitos
+                </div>
+                <div class="feature">
+                    <i class="fas fa-check"></i> Coach virtual con IA
+                </div>
+                <div class="feature">
+                    <i class="fas fa-check"></i> Comunidad de bienestar
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== LADO DERECHO - FORM ===== -->
+        <div class="auth-form">
+
+            <!-- ===== HEADER ===== -->
+            <div class="form-header">
+                <h2 id="formTitle">Bienvenido</h2>
+                <p id="formSubtitle">Inicia sesión para continuar</p>
+            </div>
+
+            <!-- ===== TABS ===== -->
+            <div class="auth-tabs" id="authTabs">
+                <button class="tab-btn active" data-tab="login" onclick="switchTab('login')">Iniciar Sesión</button>
+                <button class="tab-btn" data-tab="register" onclick="switchTab('register')">Registrarse</button>
+                <button class="tab-btn" data-tab="admin" onclick="switchTab('admin')">Admin</button>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- ===== PANEL LOGIN ===== -->
+            <!-- ========================================================== -->
+            <div class="form-panel active" id="loginPanel">
+                <form onsubmit="event.preventDefault(); login()">
+                    <div class="form-group">
+                        <label>Correo Electrónico</label>
+                        <input type="email" id="loginEmail" placeholder="tu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="loginBtn">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </button>
+                </form>
+
+                <div class="divider">
+                    <span>O continúa con</span>
+                </div>
+
+                <button class="btn btn-google" onclick="loginWithGoogle()">
+                    <i class="fab fa-google"></i> Continuar con Google
+                </button>
+
+                <div class="auth-links">
+                    <a onclick="showRecovery()">¿Olvidaste tu contraseña?</a>
+                    <a class="admin-link" onclick="switchTab('admin')">🔐 Acceso Admin</a>
+                </div>
+
+                <div id="loginMessage"></div>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- ===== PANEL REGISTRO ===== -->
+            <!-- ========================================================== -->
+            <div class="form-panel" id="registerPanel">
+                <form onsubmit="event.preventDefault(); register()">
+                    <div class="form-group">
+                        <label>Nombre Completo <span class="required">*</span></label>
+                        <input type="text" id="regName" placeholder="Ej. María García" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Correo Electrónico <span class="required">*</span></label>
+                        <input type="email" id="regEmail" placeholder="tu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña <span class="required">*</span></label>
+                        <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" required minlength="6">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Fecha de Nacimiento</label>
+                            <input type="date" id="regBirthdate">
+                        </div>
+                        <div class="form-group">
+                            <label>Género</label>
+                            <select id="regGender">
+                                <option value="">Seleccione</option>
+                                <option value="Femenino">Femenino</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Otro">Otro</option>
+                                <option value="Prefiero no decir">Prefiero no decir</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Altura (cm)</label>
+                            <input type="number" id="regHeight" placeholder="Ej. 165" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label>Peso (kg)</label>
+                            <input type="number" id="regWeight" placeholder="Ej. 68.4" step="0.1">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nivel de Actividad</label>
+                            <select id="regActivity">
+                                <option value="">Seleccione</option>
+                                <option value="Sedentario">Sedentario</option>
+                                <option value="Ligero">Ligero</option>
+                                <option value="Moderado">Moderado</option>
+                                <option value="Activo">Activo</option>
+                                <option value="Muy activo">Muy activo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Objetivo</label>
+                            <select id="regGoal">
+                                <option value="">Seleccione</option>
+                                <option value="Perder peso">Perder peso</option>
+                                <option value="Mantener peso">Mantener peso</option>
+                                <option value="Ganar músculo">Ganar músculo</option>
+                                <option value="Mejorar salud">Mejorar salud</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Condiciones de Salud Relevantes</label>
+                        <input type="text" id="regConditions" placeholder="Opcional — Ej. Diabetes tipo 2, hipertensión...">
+                    </div>
+                    <button type="submit" class="btn btn-success" id="registerBtn">
+                        <i class="fas fa-user-plus"></i> Registrarme
+                    </button>
+                </form>
+
+                <div style="margin-top: 0.75rem; text-align: center; font-size: 0.85rem; color: #7a8a9a;">
+                    ¿Ya tienes cuenta? <a onclick="switchTab('login')" style="color: #2ecc71; cursor: pointer; font-weight: 600;">Inicia Sesión</a>
+                </div>
+
+                <div id="registerMessage"></div>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- ===== PANEL ADMIN ===== -->
+            <!-- ========================================================== -->
+            <div class="form-panel" id="adminPanel">
+                <div class="admin-badge">
+                    <i class="fas fa-shield-alt"></i> Acceso de Administrador
+                </div>
+                <form onsubmit="event.preventDefault(); adminLogin()">
+                    <div class="form-group">
+                        <label>Usuario Administrador</label>
+                        <input type="text" id="adminUser" placeholder="admin" value="admin">
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" id="adminPassword" placeholder="••••••••" value="admin123">
+                    </div>
+                    <button type="submit" class="btn btn-admin" id="adminBtn">
+                        <i class="fas fa-shield-alt"></i> Iniciar como Admin
+                    </button>
+                </form>
+
+                <div style="margin-top: 0.75rem; text-align: center; font-size: 0.8rem; color: #7a8a9a;">
+                    <i class="fas fa-info-circle"></i> Credenciales: admin / admin123
+                </div>
+
+                <div class="auth-links" style="justify-content: center; margin-top: 0.75rem;">
+                    <a onclick="switchTab('login')">← Volver al inicio de sesión</a>
+                </div>
+
+                <div id="adminMessage"></div>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- ===== PANEL RECUPERACIÓN ===== -->
+            <!-- ========================================================== -->
+            <div class="recovery-panel" id="recoveryPanel">
+                <div style="margin-bottom: 1rem;">
+                    <h3 style="color: #1a2630; font-size: 1.2rem;">Recuperar Contraseña</h3>
+                    <p style="color: #7a8a9a; font-size: 0.9rem;">Te enviaremos un enlace para restablecer tu contraseña.</p>
+                </div>
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="recoveryEmail" placeholder="tu@email.com">
+                </div>
+                <button class="btn btn-primary" onclick="resetPassword()">
+                    <i class="fas fa-envelope"></i> Enviar instrucciones
+                </button>
+                <button class="btn btn-secondary" onclick="hideRecovery()" style="margin-top: 0.5rem;">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <div id="recoveryMessage"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== SCRIPTS ===== -->
+    <!-- ============================================================ -->
+        <script type="module" src="js/login.js"></script>
+</body>
+</html>

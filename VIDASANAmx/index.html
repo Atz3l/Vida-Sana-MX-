@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Vida Sana MX</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- ===== SIDEBAR ===== -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <h1>💚 Vida Sana</h1>
+            <span>SALUD & BIENESTAR</span>
+        </div>
+
+        <div class="sidebar-menu">
+            <div class="menu-label">PRINCIPAL</div>
+            <a class="active" onclick="irA('dashboard.html')">
+                <i class="fas fa-th-large"></i> Inicio
+            </a>
+
+            <div class="menu-label" style="margin-top: 1.5rem;">MÓDULO PERFIL</div>
+            <a onclick="irA('perfil.html')">
+                <i class="fas fa-user"></i> Perfil de usuario
+            </a>
+
+            <div class="menu-label" style="margin-top: 1.5rem;">MÓDULO NUTRICIÓN</div>
+            <a onclick="irA('alimentos.html')">
+                <i class="fas fa-utensils"></i> Registro de alimentos
+            </a>
+
+            <div class="menu-label" style="margin-top: 1.5rem;">MÓDULO PESO</div>
+            <a onclick="irA('peso.html')">
+                <i class="fas fa-weight-scale"></i> Registro de peso
+            </a>
+
+            <div class="menu-label" style="margin-top: 1.5rem;">MÓDULO EJERCICIO</div>
+            <a onclick="irA('ejercicios.html')">
+                <i class="fas fa-dumbbell"></i> Actividad física
+            </a>
+
+            <div class="menu-label" style="margin-top: 1.5rem;">MÓDULO BIENESTAR</div>
+            <a onclick="irA('coach-virtual.html')">
+                <i class="fas fa-robot"></i> Coach Virtual
+            </a>
+            <a onclick="irA('logros.html')">
+                <i class="fas fa-trophy"></i> Mis Logros
+            </a>
+
+            <div class="menu-label" style="margin-top: 1.5rem;">ADMINISTRACIÓN</div>
+            <a onclick="irA('admin.html')">
+                <i class="fas fa-shield-alt"></i> Panel Admin
+            </a>
+
+            <div class="menu-label" style="margin-top: 1.5rem;">SALIR</div>
+            <a onclick="cerrarSesion()">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </a>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="top-header">
+            <div>
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h2 id="welcomeMessage">Bienvenido de vuelta, Usuario</h2>
+                <div class="subtitle" id="currentDate"></div>
+            </div>
+            <div class="user-info">
+                <span id="userNameDisplay">Usuario</span>
+                <div class="avatar" id="userAvatar">👤</div>
+            </div>
+        </div>
+
+        <!-- Mensaje Motivacional -->
+        <div class="motivation-banner">
+            <i class="fas fa-quote-left"></i>
+            <div>
+                <p id="dailyQuote">"El cuerpo logra lo que la mente cree. Cada pequeño paso cuenta hoy."</p>
+                <div class="quote-author">— Mensaje del día</div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-icon">⚖️</div>
+                <div class="stat-value" id="currentWeight">-- kg</div>
+                <div class="stat-label">Peso Actual</div>
+                <div class="stat-change" id="weightChange"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-value" id="todayCalories">0</div>
+                <div class="stat-label">Calorías Hoy</div>
+                <div class="stat-change" id="caloriesGoal">Meta: 1,800 kcal</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏃</div>
+                <div class="stat-value" id="todayExercise">0 min</div>
+                <div class="stat-label">Ejercicio Hoy</div>
+                <div class="stat-change" id="exerciseGoal">Meta: 60 min</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-value" id="achievementsCount">0 / 3</div>
+                <div class="stat-label">Logros</div>
+                <div class="stat-change" id="achievementsPercent">0% completado</div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="charts-row">
+            <!-- Evolución de Peso -->
+            <div class="card">
+                <h3>📈 Evolución de Peso</h3>
+                <div class="card-subtitle">Últimas 8 semanas</div>
+                <div class="chart-container">
+                    <canvas id="weightChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Metas Activas y Actividad Reciente -->
+            <div class="card">
+                <h3>🎯 Metas Activas</h3>
+                <div id="activeGoals">
+                    <div class="goal-item">
+                        <div class="goal-info">
+                            <div class="goal-name">Peso meta</div>
+                            <div class="goal-progress-text" id="goalProgressText">0% completado</div>
+                        </div>
+                        <div class="goal-progress">
+                            <div class="goal-progress-bar" id="goalProgressBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    <div class="goal-item">
+                        <div class="goal-info">
+                            <div class="goal-name">Calorías diarias</div>
+                            <div class="goal-progress-text" id="caloriesProgressText">0% completado</div>
+                        </div>
+                        <div class="goal-progress">
+                            <div class="goal-progress-bar" id="caloriesProgressBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    <div class="goal-item">
+                        <div class="goal-info">
+                            <div class="goal-name">Ejercicio semanal</div>
+                            <div class="goal-progress-text" id="exerciseProgressText">0% completado</div>
+                        </div>
+                        <div class="goal-progress">
+                            <div class="goal-progress-bar" id="exerciseProgressBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 1.5rem;">📋 Actividad Reciente</h3>
+                <div id="recentActivity" class="recent-activity">
+                    <div style="color: #7f8c8d; font-size: 0.9rem;">No hay actividad reciente</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calorías esta semana -->
+        <div class="card">
+            <h3>📊 Calorías Esta Semana</h3>
+            <div class="chart-container" style="height: 200px;">
+                <canvas id="weeklyCaloriesChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // 🔥 REEMPLAZA CON TU CONFIGURACIÓN DE FIREBASE
+        const firebaseConfig = {
+        apiKey: "AIzaSyAj491vMui-Ey6jVnIstBf_n0OiSfhplAg",
+        authDomain: "vida-sana-mx.firebaseapp.com",
+        databaseURL: "https://vida-sana-mx-default-rtdb.firebaseio.com",
+        projectId: "vida-sana-mx",
+        storageBucket: "vida-sana-mx.firebasestorage.app",
+        messagingSenderId: "525615173137",
+        appId: "1:525615173137:web:908556c4945e8ccbc6ebb0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // ===== FUNCIONES GLOBALES =====
+        window.irA = (pagina) => { window.location.href = pagina; };
+        window.cerrarSesion = async () => { await signOut(auth); window.location.href = 'index.html'; };
+        window.toggleSidebar = () => {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        };
+
+        let weightChartInstance = null;
+        let weeklyChartInstance = null;
+
+        // Mostrar fecha actual
+        function mostrarFecha() {
+            const hoy = new Date();
+            const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = hoy.toLocaleDateString('es-MX', opciones);
+        }
+
+        // Cargar datos del usuario
+        async function cargarDatosUsuario(userId) {
+            try {
+                const userDoc = await getDoc(doc(db, "usuarios", userId));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    document.getElementById('userNameDisplay').textContent = data.nombre || 'Usuario';
+                    document.getElementById('userAvatar').textContent = data.nombre ? data.nombre.charAt(0).toUpperCase() : '👤';
+                    document.getElementById('welcomeMessage').textContent = `Bienvenido de vuelta, ${data.nombre || 'Usuario'}`;
+                }
+            } catch (error) {
+                console.error('Error cargando usuario:', error);
+            }
+        }
+
+        // Cargar peso
+        async function cargarPeso(userId) {
+            try {
+                const q = query(collection(db, "pesos"), where("userId", "==", userId), orderBy("fecha", "desc"), limit(10));
+                const snapshot = await getDocs(q);
+                const pesos = [];
+                snapshot.forEach(doc => pesos.push({ ...doc.data() }));
+
+                if (pesos.length > 0) {
+                    const pesoActual = pesos[0].peso;
+                    document.getElementById('currentWeight').textContent = `${pesoActual} kg`;
+                }
+
+                // Gráfica
+                const pesosOrdenados = [...pesos].reverse();
+                const fechas = pesosOrdenados.map(p => new Date(p.fecha).toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit' }));
+                const valores = pesosOrdenados.map(p => p.peso);
+
+                const ctx = document.getElementById('weightChart').getContext('2d');
+                if (weightChartInstance) weightChartInstance.destroy();
+
+                weightChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: fechas,
+                        datasets: [{
+                            label: 'Peso (kg)',
+                            data: valores,
+                            borderColor: '#2ecc71',
+                            backgroundColor: 'rgba(46,204,113,0.1)',
+                            borderWidth: 3,
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: false, grid: { color: '#ecf0f1' } }, x: { grid: { display: false } } }
+                    }
+                });
+
+                return pesos;
+            } catch (error) {
+                console.error('Error cargando peso:', error);
+                return [];
+            }
+        }
+
+        // Cargar calorías de hoy
+        async function cargarCaloriasHoy(userId) {
+            try {
+                const hoy = new Date();
+                hoy.setHours(0, 0, 0, 0);
+                const manana = new Date(hoy);
+                manana.setDate(manana.getDate() + 1);
+
+                const q = query(collection(db, "alimentos"), where("userId", "==", userId));
+                const snapshot = await getDocs(q);
+                let total = 0;
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const fecha = new Date(data.fecha);
+                    if (fecha >= hoy && fecha < manana) total += data.calorias || 0;
+                });
+
+                document.getElementById('todayCalories').textContent = total;
+                const progress = Math.min((total / 1800) * 100, 100);
+                document.getElementById('caloriesProgressBar').style.width = progress + '%';
+                document.getElementById('caloriesProgressText').textContent = `${Math.round(progress)}% completado`;
+
+                return total;
+            } catch (error) {
+                console.error('Error cargando calorías:', error);
+                return 0;
+            }
+        }
+
+        // Cargar ejercicios de hoy
+        async function cargarEjerciciosHoy(userId) {
+            try {
+                const hoy = new Date();
+                hoy.setHours(0, 0, 0, 0);
+                const manana = new Date(hoy);
+                manana.setDate(manana.getDate() + 1);
+
+                const q = query(collection(db, "ejercicios"), where("userId", "==", userId));
+                const snapshot = await getDocs(q);
+                let totalMinutos = 0;
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const fecha = new Date(data.fecha);
+                    if (fecha >= hoy && fecha < manana) totalMinutos += data.duracion || 0;
+                });
+
+                document.getElementById('todayExercise').textContent = `${totalMinutos} min`;
+                const progress = Math.min((totalMinutos / 60) * 100, 100);
+                document.getElementById('exerciseProgressBar').style.width = progress + '%';
+                document.getElementById('exerciseProgressText').textContent = `${Math.round(progress)}% completado`;
+
+                return totalMinutos;
+            } catch (error) {
+                console.error('Error cargando ejercicios:', error);
+                return 0;
+            }
+        }
+
+        // Cargar logros
+        async function cargarLogros(userId) {
+            try {
+                const alimentosSnap = await getDocs(query(collection(db, "alimentos"), where("userId", "==", userId)));
+                const ejerciciosSnap = await getDocs(query(collection(db, "ejercicios"), where("userId", "==", userId)));
+                const pesosSnap = await getDocs(query(collection(db, "pesos"), where("userId", "==", userId)));
+
+                const logros = [
+                    alimentosSnap.size >= 1,
+                    ejerciciosSnap.size >= 1,
+                    pesosSnap.size >= 1
+                ];
+                const completados = logros.filter(l => l).length;
+                document.getElementById('achievementsCount').textContent = `${completados} / ${logros.length}`;
+                document.getElementById('achievementsPercent').textContent = `${Math.round((completados / logros.length) * 100)}% completado`;
+            } catch (error) {
+                console.error('Error cargando logros:', error);
+            }
+        }
+
+        // Cargar actividad reciente
+        async function cargarActividadReciente(userId) {
+            try {
+                const container = document.getElementById('recentActivity');
+                const actividades = [];
+
+                const foods = await getDocs(query(collection(db, "alimentos"), where("userId", "==", userId), orderBy("fecha", "desc"), limit(3)));
+                foods.forEach(doc => actividades.push({ ...doc.data(), type: 'food' }));
+
+                const exercises = await getDocs(query(collection(db, "ejercicios"), where("userId", "==", userId), orderBy("fecha", "desc"), limit(3)));
+                exercises.forEach(doc => actividades.push({ ...doc.data(), type: 'exercise' }));
+
+                const weights = await getDocs(query(collection(db, "pesos"), where("userId", "==", userId), orderBy("fecha", "desc"), limit(3)));
+                weights.forEach(doc => actividades.push({ ...doc.data(), type: 'weight' }));
+
+                actividades.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+                const recientes = actividades.slice(0, 5);
+
+                if (recientes.length === 0) {
+                    container.innerHTML = '<div style="color: #7f8c8d; font-size: 0.9rem;">No hay actividad reciente</div>';
+                    return;
+                }
+
+                container.innerHTML = recientes.map(item => {
+                    const tiempo = new Date(item.fecha).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+                    let icono, clase, titulo, valor;
+
+                    if (item.type === 'food') {
+                        icono = 'fa-utensils';
+                        clase = 'food';
+                        titulo = item.nombre || 'Alimento';
+                        valor = `${item.calorias || 0} kcal`;
+                    } else if (item.type === 'exercise') {
+                        icono = 'fa-running';
+                        clase = 'exercise';
+                        titulo = item.nombre || 'Ejercicio';
+                        valor = `${item.duracion || 0} min`;
+                    } else {
+                        icono = 'fa-weight-scale';
+                        clase = 'weight';
+                        titulo = 'Registro de peso';
+                        valor = `${item.peso || 0} kg`;
+                    }
+
+                    return `
+                        <div class="activity-item">
+                            <div class="activity-icon ${clase}"><i class="fas ${icono}"></i></div>
+                            <div class="activity-info">
+                                <div class="activity-title">${titulo}</div>
+                                <div class="activity-time">${tiempo}</div>
+                            </div>
+                            <div class="activity-value">${valor}</div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Error cargando actividad:', error);
+            }
+        }
+
+        // Cargar calorías semanales
+        async function cargarCaloriasSemanales(userId) {
+            try {
+                const hoy = new Date();
+                const semana = [];
+                for (let i = 6; i >= 0; i--) {
+                    const dia = new Date(hoy);
+                    dia.setDate(dia.getDate() - i);
+                    dia.setHours(0, 0, 0, 0);
+                    semana.push(dia);
+                }
+
+                const q = query(collection(db, "alimentos"), where("userId", "==", userId));
+                const snapshot = await getDocs(q);
+                const caloriasPorDia = semana.map(dia => {
+                    let total = 0;
+                    const fin = new Date(dia);
+                    fin.setDate(fin.getDate() + 1);
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        const fecha = new Date(data.fecha);
+                        if (fecha >= dia && fecha < fin) total += data.calorias || 0;
+                    });
+                    return total;
+                });
+
+                const ctx = document.getElementById('weeklyCaloriesChart').getContext('2d');
+                if (weeklyChartInstance) weeklyChartInstance.destroy();
+
+                weeklyChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: semana.map(d => d.toLocaleDateString('es-MX', { weekday: 'short', day: '2-digit' })),
+                        datasets: [{
+                            label: 'Calorías',
+                            data: caloriasPorDia,
+                            backgroundColor: 'rgba(46,204,113,0.7)',
+                            borderColor: '#2ecc71',
+                            borderWidth: 1,
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, grid: { color: '#ecf0f1' } }, x: { grid: { display: false } } }
+                    }
+                });
+
+            } catch (error) {
+                console.error('Error cargando calorías semanales:', error);
+            }
+        }
+
+        // Cargar metas de peso
+        async function cargarMetas(userId) {
+            try {
+                const userDoc = await getDoc(doc(db, "usuarios", userId));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    const pesoActual = data.peso_actual || 70;
+                    const pesoMeta = data.peso_meta || 65;
+                    const progreso = Math.min(((pesoActual - pesoMeta) / pesoActual) * 100, 100);
+                    document.getElementById('goalProgressBar').style.width = Math.max(progreso, 0) + '%';
+                    document.getElementById('goalProgressText').textContent = `${Math.max(progreso, 0).toFixed(0)}% completado`;
+                }
+            } catch (error) {
+                console.error('Error cargando metas:', error);
+            }
+        }
+
+        // Mensaje motivacional del día
+        function cargarMensajeMotivacional() {
+            const mensajes = [
+                "El cuerpo logra lo que la mente cree. Cada pequeño paso cuenta hoy.",
+                "La disciplina es el puente entre tus metas y tus logros.",
+                "No se trata de ser el mejor, se trata de ser mejor que ayer.",
+                "El éxito es la suma de pequeños esfuerzos repetidos día tras día.",
+                "Tu única competencia eres tú mismo. ¡Siempre hacia adelante!"
+            ];
+            const index = Math.floor(Math.random() * mensajes.length);
+            document.getElementById('dailyQuote').textContent = `"${mensajes[index]}"`;
+        }
+
+        // ===== INICIALIZAR =====
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            mostrarFecha();
+            cargarMensajeMotivacional();
+            await cargarDatosUsuario(user.uid);
+            await cargarPeso(user.uid);
+            await cargarCaloriasHoy(user.uid);
+            await cargarEjerciciosHoy(user.uid);
+            await cargarLogros(user.uid);
+            await cargarActividadReciente(user.uid);
+            await cargarCaloriasSemanales(user.uid);
+            await cargarMetas(user.uid);
+        });
+    </script>
+</body>
+</html>
